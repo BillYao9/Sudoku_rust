@@ -155,7 +155,11 @@ impl Sudoku {
             let row = self.get_row(i);
             let mut display = String::new();
             for i in 0..9 {
-                display += row[i].value.to_string().as_str();
+                if row[i].value == 0 {
+                    display += " ";
+                } else {
+                    display += row[i].value.to_string().as_str();
+                }
                 display += " ";
             }
             println!("| {}|", display);
@@ -616,7 +620,17 @@ impl Sudoku {
         for c in &self.data {
             data.push_str(&c.value.to_string());
         }
+        data.push('\r');
+        data.push('\n');
         data
+    }
+    pub fn is_error(&self) -> bool {
+        for c in &self.data {
+            if c.count() == 0 {
+                return true;
+            }
+        }
+        return false;
     }
     pub fn try_guess(&mut self) {
         let mut ps = Vec::new();
@@ -640,6 +654,16 @@ impl Sudoku {
                     return;
                 }
             }
+        }
+    }
+    pub fn try_value(&mut self, p: (usize, usize), v: u8) {
+        let store = self.to_string();
+        self.set_value(p, v);
+        self.calculate();
+        if self.is_error() {
+            self.clean();
+            self.init(&store);
+            self.calculate();
         }
     }
 }
