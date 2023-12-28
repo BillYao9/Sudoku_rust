@@ -25,7 +25,7 @@ fn new_game() {
     println!("*********************************************************************************");
     let mut sudoku: Sudoku = Sudoku::new();
     let mut str = String::new();
-    while str.len() != 83 {
+    while str.trim().len() != 81 {
         println!("请输入81个数字,未知数字请输入0,可以三位一组输入,参考下行的位置编号:");
         println!(
             "123456789123456789123456789123456789123456789123456789123456789123456789123456789"
@@ -60,7 +60,7 @@ fn new_game() {
         io::stdin().read_line(&mut pos).unwrap();
         let pos: usize = match pos.trim().parse() {
             Ok(num) => num,
-            Err(_) => continue,
+            Err(_) => break,
         };
         match pos {
             11..=99 => sudoku.print_cell((pos - pos % 10) / 10, pos % 10),
