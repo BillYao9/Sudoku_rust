@@ -153,18 +153,12 @@ impl Sudoku {
         println!(" -------------------");
         for i in 1..=9 {
             let row = self.get_row(i);
-            println!(
-                "| {} {} {} {} {} {} {} {} {} |",
-                row[0].value,
-                row[1].value,
-                row[2].value,
-                row[3].value,
-                row[4].value,
-                row[5].value,
-                row[6].value,
-                row[7].value,
-                row[8].value
-            );
+            let mut display = String::new();
+            for i in 0..9 {
+                display += row[i].value.to_string().as_str();
+                display += " ";
+            }
+            println!("| {}|", display);
         }
         println!(" -------------------");
     }

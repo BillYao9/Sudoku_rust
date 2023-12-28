@@ -1,5 +1,6 @@
-use std::io;
+use std::io::Write;
 use std::time::Instant;
+use std::{fs, fs::File, io};
 use sudoku::Sudoku;
 
 fn main() {
@@ -23,6 +24,10 @@ fn main() {
 
 fn new_game() {
     println!("*********************************************************************************");
+    let mut file = match fs::OpenOptions::new().append(true).open("log.ini") {
+        Ok(f) => f,
+        Err(_) => File::create("log.ini").expect("无法创建log文件"),
+    };
     let mut sudoku: Sudoku = Sudoku::new();
     let mut str = String::new();
     while str.trim().len() != 81 {
@@ -51,6 +56,9 @@ fn new_game() {
         sudoku.try_guess();
         sudoku.print();
     }
+    file.write_all(str.as_bytes()).expect("写入log文件失败！");
+    file.write_all(sudoku.to_string().as_bytes()).expect("写入log文件失败！");
+    let _ = file.flush();
     let end = Instant::now();
     let duration = end.duration_since(start).as_secs_f32();
     println!("程序执行时间：{:.4} 秒", duration);
